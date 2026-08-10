@@ -35,3 +35,21 @@ exports.getStories = async (req, res) => {
     res.status(500).json({ message: 'Something went wrong' });
   }
 };
+
+exports.getStoryById = async (req, res) => {
+  try {
+    const story = await Story.findById(req.params.id).populate('author', 'name bio');
+
+    if (!story) {
+      return res.status(404).json({ message: 'Story not found' });
+    }
+
+    story.views += 1;
+    await story.save();
+
+    res.status(200).json({ story });
+  } catch (error) {
+    console.error('Get story error:', error.message);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+};

@@ -93,7 +93,8 @@ function Home() {
             {stories.map((story) => (
               <div
                 key={story._id}
-                className="bg-white border border-gray-200 rounded-md p-4"
+                onClick={() => navigate(`/stories/${story._id}`)}
+                className="bg-white border border-gray-200 rounded-md p-4 cursor-pointer hover:border-gray-400"
               >
                 <p className="font-medium text-gray-800">{story.title}</p>
                 <p className="text-sm text-gray-500 mt-1">
