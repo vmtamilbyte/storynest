@@ -5,6 +5,7 @@ import axios from 'axios';
 function Home() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,16 +16,25 @@ function Home() {
       return;
     }
 
-    axios
-      .get('http://localhost:5000/api/users/me', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setUser(res.data.user))
-      .catch(() => {
+    const fetchData = async () => {
+      try {
+        const [userRes, storiesRes] = await Promise.all([
+          axios.get('http://localhost:5000/api/users/me', {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get('http://localhost:5000/api/stories'),
+        ]);
+        setUser(userRes.data.user);
+        setStories(storiesRes.data.stories);
+      } catch {
         localStorage.removeItem('token');
         navigate('/login');
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [navigate]);
 
   const handleLogout = () => {
@@ -61,11 +71,46 @@ function Home() {
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-md p-4">
+        <div className="bg-white border border-gray-200 rounded-md p-4 mb-6">
           <p className="text-sm text-gray-500">Welcome back,</p>
           <p className="text-lg font-medium text-gray-800">{user?.name}</p>
-          <p className="text-sm text-gray-500 mt-1">{user?.email}</p>
         </div>
+
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-medium text-gray-700">Stories</h2>
+          <button
+            onClick={() => navigate('/create-story')}
+            className="text-sm bg-gray-900 text-white px-3 py-1.5 rounded-md"
+          >
+            + New Story
+          </button>
+        </div>
+
+        {stories.length === 0 ? (
+          <p className="text-sm text-gray-400">No stories yet. Be the first to publish one.</p>
+        ) : (
+          <div className="space-y-3">
+            {stories.map((story) => (
+              <div
+                key={story._id}
+                className="bg-white border border-gray-200 rounded-md p-4"
+              >
+                <p className="font-medium text-gray-800">{story.title}</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  by {story.author?.name}
+                </p>
+                {story.genres?.length > 0 && (
+                  <p className="text-xs text-gray-400 mt-1">
+                    {story.genres.join(' • ')}
+                  </p>
+                )}
+                {story.description && (
+                  <p className="text-sm text-gray-600 mt-2">{story.description}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
