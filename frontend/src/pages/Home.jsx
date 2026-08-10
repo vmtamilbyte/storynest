@@ -45,12 +45,20 @@ function Home() {
       <div className="max-w-md mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-semibold text-gray-800">StoryNest</h1>
-          <button
-            onClick={handleLogout}
-            className="text-sm text-gray-500 underline"
-          >
-            Log out
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate('/settings')}
+              className="text-sm text-gray-500 underline"
+            >
+              Settings
+            </button>
+            <button
+              onClick={handleLogout}
+              className="text-sm text-gray-500 underline"
+            >
+              Log out
+            </button>
+          </div>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-md p-4">
