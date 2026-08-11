@@ -6,6 +6,8 @@ import Settings from './pages/Settings';
 import CreateStory from './pages/CreateStory';
 import StoryDetail from './pages/StoryDetail';
 import ChapterReader from './pages/ChapterReader';
+import MyStories from './pages/MyStories';
+import AddChapter from './pages/AddChapter';
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
       <Route path="/create-story" element={<CreateStory />} />
       <Route path="/stories/:id" element={<StoryDetail />} />
       <Route path="/chapters/:id" element={<ChapterReader />} />
+      <Route path="/my-stories" element={<MyStories />} />
+      <Route path="/stories/:storyId/add-chapter" element={<AddChapter />} />
     </Routes>
   );
 }

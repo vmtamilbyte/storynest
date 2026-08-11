@@ -36,6 +36,16 @@ exports.getStories = async (req, res) => {
   }
 };
 
+exports.getMyStories = async (req, res) => {
+  try {
+    const stories = await Story.find({ author: req.userId }).sort({ createdAt: -1 });
+    res.status(200).json({ stories });
+  } catch (error) {
+    console.error('Get my stories error:', error.message);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
 exports.getStoryById = async (req, res) => {
   try {
     const story = await Story.findById(req.params.id).populate('author', 'name bio');
