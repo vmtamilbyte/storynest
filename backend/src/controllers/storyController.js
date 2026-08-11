@@ -25,7 +25,18 @@ exports.createStory = async (req, res) => {
 
 exports.getStories = async (req, res) => {
   try {
-    const stories = await Story.find()
+    const { search, genre } = req.query;
+    const filter = {};
+
+    if (search) {
+      filter.title = { $regex: search, $options: 'i' };
+    }
+
+    if (genre) {
+      filter.genres = genre;
+    }
+
+    const stories = await Story.find(filter)
       .populate('author', 'name')
       .sort({ createdAt: -1 });
 

@@ -51,8 +51,8 @@ function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-8">
-      <div className="max-w-md mx-auto">
+<div className="min-h-screen bg-gray-50 px-4 py-8 pb-20">
+        <div className="max-w-md mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-semibold text-gray-800">StoryNest</h1>
           <div className="flex items-center gap-4">
