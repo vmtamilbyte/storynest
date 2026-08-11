@@ -7,18 +7,32 @@ function StoryDetail() {
   const navigate = useNavigate();
   const [story, setStory] = useState(null);
   const [chapters, setChapters] = useState([]);
+  const [liked, setLiked] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [storyRes, chaptersRes] = await Promise.all([
+        const requests = [
           axios.get(`http://localhost:5000/api/stories/${id}`),
           axios.get(`http://localhost:5000/api/stories/${id}/chapters`),
-        ]);
-        setStory(storyRes.data.story);
-        setChapters(chaptersRes.data.chapters);
+        ];
+
+        if (token) {
+          requests.push(
+            axios.get(`http://localhost:5000/api/stories/${id}/like`, {
+              headers: { Authorization: `Bearer ${token}` },
+            })
+          );
+        }
+
+        const results = await Promise.all(requests);
+        setStory(results[0].data.story);
+        setChapters(results[1].data.chapters);
+        if (results[2]) setLiked(results[2].data.liked);
       } catch {
         setError('Story not found');
       } finally {
@@ -27,7 +41,29 @@ function StoryDetail() {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, token]);
+
+  const handleToggleLike = async () => {
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        `http://localhost:5000/api/stories/${id}/like`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setLiked(res.data.liked);
+      setStory((prev) => ({
+        ...prev,
+        likesCount: prev.likesCount + (res.data.liked ? 1 : -1),
+      }));
+    } catch {
+      // fail silently, no need to interrupt reading
+    }
+  };
 
   if (loading) {
     return (
@@ -67,10 +103,19 @@ function StoryDetail() {
           </p>
         )}
 
-        <div className="flex gap-4 text-xs text-gray-400 mb-6">
-          <span>{story.views} views</span>
-          <span>{story.likesCount} likes</span>
-          <span>{chapters.length} chapters</span>
+        <div className="flex items-center gap-4 mb-6">
+          <button
+            onClick={handleToggleLike}
+            className={`flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border ${
+              liked
+                ? 'bg-red-50 border-red-300 text-red-600'
+                : 'bg-white border-gray-300 text-gray-600'
+            }`}
+          >
+            {liked ? '♥' : '♡'} {story.likesCount}
+          </button>
+          <span className="text-xs text-gray-400">{story.views} views</span>
+          <span className="text-xs text-gray-400">{chapters.length} chapters</span>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-md p-4 mb-6">
