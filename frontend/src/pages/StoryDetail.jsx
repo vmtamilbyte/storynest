@@ -1,20 +1,32 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 function StoryDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [story, setStory] = useState(null);
+  const [chapters, setChapters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5000/api/stories/${id}`)
-      .then((res) => setStory(res.data.story))
-      .catch(() => setError('Story not found'))
-      .finally(() => setLoading(false));
+    const fetchData = async () => {
+      try {
+        const [storyRes, chaptersRes] = await Promise.all([
+          axios.get(`http://localhost:5000/api/stories/${id}`),
+          axios.get(`http://localhost:5000/api/stories/${id}/chapters`),
+        ]);
+        setStory(storyRes.data.story);
+        setChapters(chaptersRes.data.chapters);
+      } catch {
+        setError('Story not found');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [id]);
 
   if (loading) {
@@ -47,13 +59,7 @@ function StoryDetail() {
           {story.title}
         </h1>
 
-        <p className="text-sm text-gray-500 mb-1">
-          by {story.author?.name}
-        </p>
-
-        {story.author?.bio && (
-          <p className="text-xs text-gray-400 mb-4">{story.author.bio}</p>
-        )}
+        <p className="text-sm text-gray-500 mb-1">by {story.author?.name}</p>
 
         {story.genres?.length > 0 && (
           <p className="text-xs text-gray-400 mb-4">
@@ -64,13 +70,34 @@ function StoryDetail() {
         <div className="flex gap-4 text-xs text-gray-400 mb-6">
           <span>{story.views} views</span>
           <span>{story.likesCount} likes</span>
+          <span>{chapters.length} chapters</span>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-md p-4">
+        <div className="bg-white border border-gray-200 rounded-md p-4 mb-6">
           <p className="text-sm text-gray-700 leading-relaxed">
             {story.description || 'No description yet.'}
           </p>
         </div>
+
+        <h2 className="text-sm font-medium text-gray-700 mb-3">Chapters</h2>
+
+        {chapters.length === 0 ? (
+          <p className="text-sm text-gray-400">No chapters published yet.</p>
+        ) : (
+          <div className="space-y-2">
+            {chapters.map((chapter) => (
+              <Link
+                key={chapter._id}
+                to={`/chapters/${chapter._id}`}
+                className="block bg-white border border-gray-200 rounded-md p-3 hover:border-gray-400"
+              >
+                <p className="text-sm font-medium text-gray-800">
+                  {chapter.chapterNumber}. {chapter.title}
+                </p>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

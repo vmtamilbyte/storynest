@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Settings from './pages/Settings';
 import CreateStory from './pages/CreateStory';
 import StoryDetail from './pages/StoryDetail';
+import ChapterReader from './pages/ChapterReader';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Route path="/settings" element={<Settings />} />
       <Route path="/create-story" element={<CreateStory />} />
       <Route path="/stories/:id" element={<StoryDetail />} />
+      <Route path="/chapters/:id" element={<ChapterReader />} />
     </Routes>
   );
 }
