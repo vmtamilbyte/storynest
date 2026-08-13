@@ -11,7 +11,7 @@ function ChapterReader() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/chapters/${id}`)
+      .get(`${import.meta.env.VITE_API_URL}/api/chapters/${id}`)
       .then((res) => setChapter(res.data.chapter))
       .catch(() => setError('Chapter not found'))
       .finally(() => setLoading(false));
@@ -34,7 +34,7 @@ function ChapterReader() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-8">
+    <div className="min-h-screen bg-gray-50 px-4 py-8 pb-20">
       <div className="max-w-md mx-auto">
         <button
           onClick={() => navigate(`/stories/${chapter.story?._id}`)}

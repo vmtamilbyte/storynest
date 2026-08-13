@@ -19,7 +19,7 @@ function AddChapter() {
 
     try {
       await axios.post(
-        `http://localhost:5000/api/stories/${storyId}/chapters`,
+        `${import.meta.env.VITE_API_URL}/api/stories/${storyId}/chapters`,
         { title, content },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -32,7 +32,7 @@ function AddChapter() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-8">
+    <div className="min-h-screen bg-gray-50 px-4 py-8 pb-20">
       <div className="max-w-md mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-semibold text-gray-800">Add Chapter</h1>

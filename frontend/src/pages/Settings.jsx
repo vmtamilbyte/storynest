@@ -29,7 +29,7 @@ function Settings() {
     }
 
     axios
-      .get('http://localhost:5000/api/users/me', {
+      .get(`${import.meta.env.VITE_API_URL}/api/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -57,7 +57,7 @@ function Settings() {
 
     try {
       await axios.put(
-        'http://localhost:5000/api/users/me',
+        `${import.meta.env.VITE_API_URL}/api/users/me`,
         { bio, age: age ? Number(age) : undefined, tags },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -78,7 +78,7 @@ function Settings() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-8">
+    <div className="min-h-screen bg-gray-50 px-4 py-8 pb-20">
       <div className="max-w-md mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-semibold text-gray-800">Settings</h1>

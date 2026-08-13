@@ -18,7 +18,7 @@ function Browse() {
     setLoading(true);
     const timeout = setTimeout(() => {
       axios
-        .get('http://localhost:5000/api/stories', { params })
+        .get(`${import.meta.env.VITE_API_URL}/api/stories`, { params })
         .then((res) => setStories(res.data.stories))
         .finally(() => setLoading(false));
     }, 300);

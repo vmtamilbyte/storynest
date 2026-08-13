@@ -15,7 +15,7 @@ function MyStories() {
     }
 
     axios
-      .get('http://localhost:5000/api/stories/mine', {
+      .get(`${import.meta.env.VITE_API_URL}/api/stories/mine`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setStories(res.data.stories))
@@ -32,7 +32,7 @@ function MyStories() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-8">
+    <div className="min-h-screen bg-gray-50 px-4 py-8 pb-20">
       <div className="max-w-md mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-semibold text-gray-800">My Stories</h1>

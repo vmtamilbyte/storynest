@@ -19,10 +19,10 @@ function Home() {
     const fetchData = async () => {
       try {
         const [userRes, storiesRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/users/me', {
+          axios.get(`${import.meta.env.VITE_API_URL}/api/users/me`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get('http://localhost:5000/api/stories'),
+          axios.get(`${import.meta.env.VITE_API_URL}/api/stories`),
         ]);
         setUser(userRes.data.user);
         setStories(storiesRes.data.stories);
@@ -51,16 +51,22 @@ function Home() {
   }
 
   return (
-<div className="min-h-screen bg-gray-50 px-4 py-8 pb-20">
-        <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-gray-50 px-4 py-8 pb-20">
+      <div className="max-w-md mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-semibold text-gray-800">StoryNest</h1>
           <div className="flex items-center gap-4">
-           <button
+            <button
               onClick={() => navigate('/my-stories')}
               className="text-sm text-gray-500 underline"
             >
               My Stories
+            </button>
+            <button
+              onClick={() => navigate('/settings')}
+              className="text-sm text-gray-500 underline"
+            >
+              Settings
             </button>
             <button
               onClick={handleLogout}
