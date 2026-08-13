@@ -10,6 +10,8 @@ import MyStories from './pages/MyStories';
 import AddChapter from './pages/AddChapter';
 import Browse from './pages/Browse';
 import BottomNav from './components/BottomNav';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
         <Route path="/my-stories" element={<MyStories />} />
         <Route path="/stories/:storyId/add-chapter" element={<AddChapter />} />
         <Route path="/browse" element={<Browse />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Routes>
       <BottomNav />
     </>

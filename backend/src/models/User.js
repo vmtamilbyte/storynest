@@ -42,6 +42,12 @@ const userSchema = new mongoose.Schema(
       enum: ['reader', 'author', 'both'],
       default: 'reader',
     },
+    resetPasswordToken: {
+      type: String,
+    },
+    resetPasswordExpires: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
