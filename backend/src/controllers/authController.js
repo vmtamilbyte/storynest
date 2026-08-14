@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/User');
+const sendEmail = require('../utils/sendEmail');
 
 exports.signup = async (req, res) => {
   try {
@@ -88,26 +89,32 @@ exports.forgotPassword = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    // Always respond the same way, whether or not the email exists —
-    // prevents attackers from discovering which emails are registered
     if (!user) {
       return res.status(200).json({
-        message: 'If that email exists, a reset link has been generated.',
+        message: 'If that email exists, a reset link has been sent.',
       });
     }
 
     const resetToken = crypto.randomBytes(32).toString('hex');
     user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = Date.now() + 60 * 60 * 1000; // 1 hour
+    user.resetPasswordExpires = Date.now() + 60 * 60 * 1000;
     await user.save();
 
     const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
-    // TEMPORARY: return the link directly instead of emailing it,
-    // so we can test the flow before wiring up real email sending
+    await sendEmail({
+      to: user.email,
+      subject: 'Reset your StoryNest password',
+      html: `
+        <p>Hi ${user.name},</p>
+        <p>You requested a password reset. Click the link below to set a new password. This link expires in 1 hour.</p>
+        <p><a href="${resetLink}">${resetLink}</a></p>
+        <p>If you didn't request this, you can safely ignore this email.</p>
+      `,
+    });
+
     res.status(200).json({
-      message: 'If that email exists, a reset link has been generated.',
-      resetLink,
+      message: 'If that email exists, a reset link has been sent.',
     });
   } catch (error) {
     console.error('Forgot password error:', error.message);

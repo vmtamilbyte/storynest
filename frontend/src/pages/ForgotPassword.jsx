@@ -5,14 +5,12 @@ import axios from 'axios';
 function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [resetLink, setResetLink] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage('');
-    setResetLink('');
 
     try {
       const res = await axios.post(
@@ -20,9 +18,6 @@ function ForgotPassword() {
         { email }
       );
       setMessage(res.data.message);
-      if (res.data.resetLink) {
-        setResetLink(res.data.resetLink);
-      }
     } catch (err) {
       setMessage(err.response?.data?.message || 'Something went wrong');
     } finally {
@@ -60,20 +55,6 @@ function ForgotPassword() {
 
         {message && (
           <p className="text-sm text-gray-600 text-center mt-4">{message}</p>
-        )}
-
-        {resetLink && (
-          <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-md p-3">
-            <p className="text-xs text-yellow-800 mb-1">
-              Dev mode — no email service connected yet:
-            </p>
-            <Link
-              to={resetLink.replace(window.location.origin, '')}
-              className="text-xs text-blue-600 underline break-all"
-            >
-              {resetLink}
-            </Link>
-          </div>
         )}
 
         <p className="text-sm text-gray-500 text-center mt-4">
